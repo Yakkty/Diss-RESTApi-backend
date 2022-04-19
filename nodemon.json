@@ -1,0 +1,8 @@
+{
+  "env": {
+    "DB_USER": "Jack2",
+    "DB_PASSWORD": "dissertation123",
+    "DB_NAME": "DissertationDB",
+    "JWT_KEY": "token_key_string"
+  }
+}
