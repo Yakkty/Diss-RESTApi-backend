@@ -19,6 +19,8 @@ router.get("/:pid", postsController.getPostById);
 //This then calls the getPostsByUserId function from the posts controller file
 router.get("/user/:uid", postsController.getPostsByUserId);
 
+//Router for protecting post, patch and delete requests using the auth.js middleware
+//Only authenticated users can send http requests to this rest api
 router.use(auth);
 
 //Configures post requests to /, along with basic input validation checks

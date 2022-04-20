@@ -12,7 +12,7 @@ module.exports = (req, res, next) => {
     return next();
   }
   try {
-    //store the token as the value is located in the 2nd element of the array
+    //store the token. The value is located in the 2nd element of the array
     //This is due the token usually coming with a bearer i.e 'BEARER'+ token
     const token = req.headers.authorization.split(" ")[1];
     //if check to see if token exists, if not throw an error

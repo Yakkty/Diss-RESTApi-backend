@@ -15,6 +15,8 @@ const router = express.Router();
 //This then calls the getTDItemsByUserId function from the td controllers file
 router.get("/user/:uid", tdControllers.getTDItemsByUserId);
 
+//Router for protecting post and delete requests using the auth.js middleware
+//Only authenticated users can send http requests to this rest api
 router.use(auth);
 
 //Configures post requests to /, along with checking for basic input validation

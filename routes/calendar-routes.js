@@ -15,6 +15,8 @@ const router = express.Router();
 //getCalendarItemsByUserId is then called
 router.get("/user/:uid", calendarControllers.getCalendarItemsByUserId);
 
+//Router for protecting post and delete requests using the auth.js middleware
+//Only authenticated users can send http requests to this rest api
 router.use(auth);
 
 //Configures post requests to /, along with basic input validation checks

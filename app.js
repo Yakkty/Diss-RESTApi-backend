@@ -33,11 +33,14 @@ app.use((req, res, next) => {
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
   );
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PATCH, DELETE, OPTIONS");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PATCH, DELETE, OPTIONS"
+  );
   next();
 });
 
-//Adding  route configured in routes folder as middlewares
+//Adding routes configured in the routes folder as middlewares
 app.use("/api/posts", postsRoutes);
 
 app.use("/api/todolist", tdRoutes);
@@ -46,7 +49,7 @@ app.use("/api/calendar", calendarRoutes);
 
 app.use("/api/users", userRoutes);
 
-//Only reached if a request didn't receive a response
+//this is only reached if a request didn't receive a response, throws error if thats the case
 app.use((req, res, next) => {
   const error = new HttpError("Route not found", 404);
   throw error;
@@ -54,6 +57,7 @@ app.use((req, res, next) => {
 
 //Error handling middleware, only executes on requests that throw errors
 app.use((error, req, res, next) => {
+  //Deletes image if an error occured during the creation of new posts
   if (req.file) {
     fs.unlink(req.file.path, (err) => {
       console.log("Unlinked");
@@ -68,13 +72,14 @@ app.use((error, req, res, next) => {
 });
 
 //mongoose connect is asynchronous so can chain then() and catch()
+//Using environment variables for production code
 mongoose
   .connect(
     `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@uniwork.lbg0m.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`,
     { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true }
   )
   .then(() => {
-    //Starts the server on port 5000 if database connection was successful
+    //Starts the server, using environment variable or 5000 as a fallback
     app.listen(process.env.PORT || 5000);
   })
   .catch((err) => {

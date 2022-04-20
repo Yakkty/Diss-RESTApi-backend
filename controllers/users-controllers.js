@@ -1,6 +1,5 @@
 //This file Configures login and signup functions
 
-const { v4: uuidv4 } = require("uuid");
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -42,8 +41,11 @@ const signup = async (req, res, next) => {
     return next(error);
   }
 
+  //Attempt to hash password for added security
+
   let hashedPassword;
   try {
+    //Using bcrypt library method to hash the password
     //second number is salting rounds, hash returns a promise so we can use await
     hashedPassword = await bcrypt.hash(password, 10);
   } catch (err) {
@@ -69,6 +71,8 @@ const signup = async (req, res, next) => {
     return next(error);
   }
 
+  //Attempt to create a token, attaching username, user id and an expiration date to the token payload
+  //This is using jwon web tokens
   let token;
   try {
     token = jwt.sign(
@@ -81,8 +85,7 @@ const signup = async (req, res, next) => {
     return next(error);
   }
 
-  //Return signed up user, converting it to a javascript object from a mongoose object
-  //getters:true returns an id property with no _ before it
+  //Return user id, username and the created token
   res.status(201).json({
     userId: createdUser.id,
     username: createdUser.username,
@@ -123,11 +126,14 @@ const login = async (req, res, next) => {
     return next(error);
   }
 
+  //Check if the inputted password is valid
   if (!ValidPassword) {
     const error = new HttpError("Could not log in, invalid credentials", 401);
     return next(error);
   }
 
+  //Attempt to create a token, attaching username, user id and expiration date to the payload
+  //This is using jwon web tokens
   let token;
   try {
     token = jwt.sign(
@@ -140,8 +146,8 @@ const login = async (req, res, next) => {
     return next(error);
   }
 
-  //If a user is found and the passwords match, the user gets a successful response
-  //getters:true returns an id property with no _ before it
+  //If a user is found and the passwords match a response gets sent back
+  //The response contains the user id, username and token
   res.json({
     userId: existingUser.id,
     username: existingUser.username,
